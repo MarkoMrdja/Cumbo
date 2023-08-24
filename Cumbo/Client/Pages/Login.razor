@@ -1,0 +1,43 @@
+﻿@page "/login"
+@inject IAuthService AuthService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
+<MudContainer Class="d-flex justify-center align-center">
+    <MudPaper Elevation="3" Square="true" Width="600px" Class="pa-3">
+        <MudTextField T="string" Label="Username" Class="mt-5 mb-5 pr-3 pl-3" @bind-Value="user.Username"/>
+        <MudTextField T="string" Label="Password" Class="mt-5 mb-5 pr-3 pl-3" @bind-Value="user.Password" InputType="InputType.Password"/>
+        <MudButton Color="Color.Primary" FullWidth="true" Variant="Variant.Filled" Class="mt-3 mb-3 pr-3 pl-3" OnClick="@HandleLogin">Login</MudButton>
+        <MudLink Class="justify-end mt-2" OnClick="@ToRegister">Don't have an account? Register here</MudLink>
+    </MudPaper>
+</MudContainer>
+
+@code{
+    private UserLoginDto user = new();
+
+    private async Task HandleLogin()
+    {
+        var validation = AuthService.LoginValidation(user, out string error);
+
+        if (!validation)
+        {
+            Snackbar.Add(error, Severity.Warning);
+            return;
+        }
+
+        var response = await AuthService.Login(user);
+
+        Snackbar.Add(response.Message, Severity.Success);
+
+        if (response.Success)
+        {
+            NavigationManager.NavigateTo("/dashboard");
+        }
+
+    }
+
+    private void ToRegister()
+    {
+        NavigationManager.NavigateTo("/register");
+    }
+}
