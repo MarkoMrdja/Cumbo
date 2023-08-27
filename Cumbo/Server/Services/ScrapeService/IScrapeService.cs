@@ -1,9 +1,10 @@
 ﻿using Cumbo.Server.Models.KupujemProdajemAd;
+using Cumbo.Shared;
 
 namespace Cumbo.Server.Services.ScrapeService
 {
     public interface IScrapeService
     {
-        public List<Advertisment> ScrapeAdsPerPage(int page);
+        Task<ServiceResponse<List<AdvertismentDto>>> ScrapeAds();
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using Cumbo.Shared.Enums;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Cumbo.Server.Models
 {
@@ -7,6 +8,6 @@ namespace Cumbo.Server.Models
         public int Memory { get; set; }
         public string Color { get; set; }
         public int BatteryLife { get; set; }
-        public override string Type => typeof(Phone).Name;
+        public override ProductType Type => ProductType.Phone;
     }
 }

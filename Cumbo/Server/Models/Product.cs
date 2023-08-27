@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Cumbo.Shared.Enums;
+using System.Text.Json.Serialization;
 
 namespace Cumbo.Server.Models
 {
@@ -7,7 +8,7 @@ namespace Cumbo.Server.Models
         public int Id { get; set; }
         public int ProductModelId { get; set; }
         public decimal BoughtFor { get; set; }
-        public abstract string Type { get; }
+        public abstract ProductType Type { get; }
         public DateTime DateOfBuying { get; set; }
         [JsonIgnore]
         public ProductModel ProductModel { get; set; }

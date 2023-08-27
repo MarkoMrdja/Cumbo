@@ -1,4 +1,5 @@
 ﻿using Cumbo.Server.Models;
+using Cumbo.Server.Models.KupujemProdajemAd;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cumbo.Server.Data
@@ -11,6 +12,7 @@ namespace Cumbo.Server.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Advertisment> Advertisments { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
