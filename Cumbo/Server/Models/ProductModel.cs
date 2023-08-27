@@ -8,8 +8,8 @@ namespace Cumbo.Server.Models
         public string Name { get; set; } = string.Empty;
         public int ManufacturerId { get; set; }
         [JsonIgnore]
-        public Manufacturer Manufacturer { get; set; }
+        public Manufacturer? Manufacturer { get; set; }
         [JsonIgnore]
-        public List<Product> Products { get; set; }
+        public List<Product>? Products { get; set; }
     }
 }

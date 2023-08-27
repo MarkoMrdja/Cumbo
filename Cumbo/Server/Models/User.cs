@@ -9,6 +9,6 @@ namespace Cumbo.Server.Models
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         [JsonIgnore]
-        public List<Transaction> Transactions { get; set; }
+        public List<Transaction>? Transactions { get; set; }
     }
 }

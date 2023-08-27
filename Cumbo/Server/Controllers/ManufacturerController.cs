@@ -1,5 +1,5 @@
 ﻿using Cumbo.Server.Models;
-using Cumbo.Server.Services.ManufacturerService;
+using Cumbo.Server.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,66 +9,75 @@ namespace Cumbo.Server.Controllers
     [ApiController]
     public class ManufacturerController : ControllerBase
     {
-        private readonly IManufacturerService _manufacturer;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ManufacturerController(IManufacturerService manufacturer)
+        public ManufacturerController(IUnitOfWork unitOfWork)
         {
-            _manufacturer = manufacturer;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _manufacturer.GetAllManufacturers();
+            var result = await _unitOfWork.Manufacturer.GetAll();
 
-            if (result is null)
-                return BadRequest();
-            else
+            if (result is not null)
                 return Ok(result);
+
+            return BadRequest();    
         }
 
         [HttpGet("GetById")]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await _manufacturer.GetManufacturer(id);
+            var result = await _unitOfWork.Manufacturer.GetById(id);
 
-            if (result is null)
-                return BadRequest(result);
-            else
+            if (result is not null)
                 return Ok(result);
+
+            return BadRequest();
         }
 
         [HttpPost("Add")]
         public async Task<IActionResult> Add(Manufacturer manufacturer)
         {
-            var result = await _manufacturer.AddManufacturer(manufacturer);
+            var result = await _unitOfWork.Manufacturer.Add(manufacturer);
 
-            if (!result.Success)
-                return BadRequest(result);
-            else
+            if (result)
+            {
+                await _unitOfWork.Save();
                 return Ok(result);
+            }
+            
+            return BadRequest(result);    
         }
 
         [HttpPut("Update")]
         public async Task<IActionResult> Update(Manufacturer manufacturer)
         {
-            var result = await _manufacturer.UpdateManufacturer(manufacturer);
+            var existing = await _unitOfWork.Manufacturer.GetById(manufacturer.Id);
 
-            if (!result.Success)
-                return BadRequest(result);
-            else
-                return Ok(result);
+            if (existing is null)
+                return BadRequest();
+
+            var result = await _unitOfWork.Manufacturer.Update(manufacturer);
+            await _unitOfWork.Save();
+
+            return Ok(result);
         }
 
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _manufacturer.DeleteManufacturer(id);
+            var entity = await _unitOfWork.Manufacturer.GetById(id);
 
-            if (!result.Success)
-                return BadRequest(result);
-            else
-                return Ok(result);
+            if (entity is null)
+                return BadRequest();
+
+            var result = await _unitOfWork.Manufacturer.Remove(entity);
+            await _unitOfWork.Save();
+
+            return Ok(result);
         }
     }
 }

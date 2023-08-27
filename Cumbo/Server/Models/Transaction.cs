@@ -11,10 +11,10 @@ namespace Cumbo.Server.Models
         public decimal Price { get; set; }
         public DateTime TimeOfTransaction { get; set; } = DateTime.Now;
         [JsonIgnore]
-        public Customer Customer { get; set; }
+        public Customer? Customer { get; set; }
         [JsonIgnore]
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
         [JsonIgnore]
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }

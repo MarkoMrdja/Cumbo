@@ -6,7 +6,7 @@ namespace Cumbo.Server.Models
     public class Phone : Product
     {
         public int Memory { get; set; }
-        public string Color { get; set; }
+        public string Color { get; set; } //enum
         public int BatteryLife { get; set; }
         public override ProductType Type => ProductType.Phone;
     }

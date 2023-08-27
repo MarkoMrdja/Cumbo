@@ -6,9 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Cumbo.Server.Services.AuthService;
-using Cumbo.Server.Services.ManufacturerService;
 using HtmlAgilityPack;
 using Cumbo.Server.Services.ScrapeService;
+using Cumbo.Server.Repository;
+using Cumbo.Server.Repository.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,10 +27,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddSingleton<HtmlWeb>();
 
-builder.Services.AddScoped<IManufacturerService, ManufacturerService>();
 builder.Services.AddScoped<IScrapeService, ScrapeService>();
 
 builder.Services.AddAuthentication(options =>

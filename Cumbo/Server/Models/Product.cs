@@ -11,8 +11,8 @@ namespace Cumbo.Server.Models
         public abstract ProductType Type { get; }
         public DateTime DateOfBuying { get; set; }
         [JsonIgnore]
-        public ProductModel ProductModel { get; set; }
+        public ProductModel? ProductModel { get; set; }
         [JsonIgnore]
-        public List<Transaction> Transactions { get; set; }
+        public List<Transaction>? Transactions { get; set; }
     }
 }
