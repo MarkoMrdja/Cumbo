@@ -12,5 +12,6 @@ namespace Cumbo.Server.Repository
         Task<bool> Remove(T entity);
         Task<bool> RemoveRange(IEnumerable<T> entities);
         Task<bool> Update(T entity);
+        Task<bool> UpdateRange(IEnumerable<T> entities);
     }
 }

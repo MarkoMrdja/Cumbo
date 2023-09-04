@@ -1,6 +1,7 @@
 ﻿using Cumbo.Server.Models.KupujemProdajemAd;
 using Cumbo.Shared;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Primitives;
 
 namespace Cumbo.Server.Services.ScrapeService
 {
@@ -79,13 +80,25 @@ namespace Cumbo.Server.Services.ScrapeService
                     var adUrl = HtmlEntity.DeEntitize(article.QuerySelector("a.Link_link__J4Qd8")?.Attributes["href"].Value);
                     var price = HtmlEntity.DeEntitize(article.QuerySelector(".AdItem_price__jUgxi")?.InnerText);
 
+                    string trimmedPrice = string.Empty;
+
                     if (!price.Contains('€'))
                         continue;
+                    else
+                    {
+                        foreach (char c in price)
+                        {
+                            if (char.IsDigit(c))
+                            {
+                                trimmedPrice += c;
+                            }
+                        }
+                    }
 
                     var ad = new AdvertismentDto
                     {
                         Title = name,
-                        Price = price,
+                        Price = trimmedPrice,
                         Url = adUrl,
                         Image = imageSrc
                     };

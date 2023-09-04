@@ -57,5 +57,11 @@ namespace Cumbo.Server.Repository.Implementations
             _context.Set<T>().Update(entity);
             return true;
         }
+
+        public virtual async Task<bool> UpdateRange(IEnumerable<T> entities)
+        {
+            _context.Set<T>().UpdateRange(entities);
+            return true;
+        }
     }
 }

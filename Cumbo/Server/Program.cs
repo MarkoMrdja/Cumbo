@@ -10,6 +10,9 @@ using HtmlAgilityPack;
 using Cumbo.Server.Services.ScrapeService;
 using Cumbo.Server.Repository;
 using Cumbo.Server.Repository.Implementations;
+using Hangfire;
+using Hangfire.PostgreSql;
+using Cumbo.Server.Services.HangfireService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +35,7 @@ builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<HtmlWeb>();
 
 builder.Services.AddScoped<IScrapeService, ScrapeService>();
+builder.Services.AddTransient<IHangfireService, HangfireService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -58,6 +62,12 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddHangfire(config => config
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UsePostgreSqlStorage(builder.Configuration.GetConnectionString("DbConnection"))
+);
+builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
@@ -91,5 +101,10 @@ app.UseRouting();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+
+app.UseHangfireDashboard();
+app.MapHangfireDashboard();
+
+RecurringJob.AddOrUpdate<IHangfireService>("adJob", x => x.SyncAds(), "0 */10 * ? * *");
 
 app.Run();

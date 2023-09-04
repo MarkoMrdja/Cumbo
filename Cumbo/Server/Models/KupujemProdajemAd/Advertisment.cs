@@ -11,5 +11,7 @@ namespace Cumbo.Server.Models.KupujemProdajemAd
         public string Url { get; set; }
         public ProductType ProductType { get; set; }
         public long? IMEI { get; set; }
+        public bool CurrentlyActive { get; set; }
+        public DateTime LastActive { get; set; }
     }
 }

@@ -4,5 +4,6 @@ namespace Cumbo.Server.Repository.Interfaces
 {
     public interface IAdvertisementRepository : IGenericRepository<Advertisment>
     {
+        Task<List<Advertisment>> GetActive();
     }
 }

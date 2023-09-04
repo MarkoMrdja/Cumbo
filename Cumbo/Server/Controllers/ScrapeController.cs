@@ -1,4 +1,5 @@
 ﻿using Cumbo.Server.Models.KupujemProdajemAd;
+using Cumbo.Server.Services.HangfireService;
 using Cumbo.Server.Services.ScrapeService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +10,8 @@ namespace Cumbo.Server.Controllers
     [ApiController]
     public class ScrapeController : ControllerBase
     {
-        private readonly IScrapeService _Scrape;
-        public ScrapeController(IScrapeService scrape)
+        private readonly IHangfireService _Scrape;
+        public ScrapeController(IHangfireService scrape)
         {
             _Scrape = scrape;
         }
@@ -18,12 +19,9 @@ namespace Cumbo.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> Get() 
         {
-            var result = await _Scrape.ScrapeAds();
+            await _Scrape.SyncAds();
 
-            if (!result.Success)
-                return BadRequest(result);
-            else
-                return Ok(result);
+            return Ok();
         }
     }
 }

@@ -11,8 +11,10 @@ public class AdvertismentProfile : Profile
         CreateMap<AdvertismentDto, Advertisment>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Url, opt => opt.MapFrom(src => "https://novi.kupujemprodajem.com" + src.Url))
-                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => int.Parse(src.Price.Replace(" €", ""))))
-                .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => GetProductTypeFromUrl(src.Url))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => int.Parse(src.Price)))
+                .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => GetProductTypeFromUrl(src.Url)))
+                .ForMember(dest => dest.CurrentlyActive, opt => opt.MapFrom(src => true))
+                .ForMember(dest => dest.LastActive, opt => opt.MapFrom(src => DateTime.UtcNow)
             );
     }
 
