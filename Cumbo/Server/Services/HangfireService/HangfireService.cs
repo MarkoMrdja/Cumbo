@@ -29,44 +29,59 @@ namespace Cumbo.Server.Services.HangfireService
             List<Advertisment> scrapedAds = _mapper.Map<List<Advertisment>>(scraped.Data);
             List<Advertisment> queryedAds = await _unitOfWork.Advertisement.GetActive();
 
-            HashSet<string> queryedTitles = new HashSet<string>(queryedAds.Select(ad => ad.Title));
+            var queryedAdsByTitle = queryedAds.ToDictionary(ad => ad.Title);
 
-            List<Advertisment> unmatchedAds = new();
             List<Advertisment> updatedAds = new();
+            List<Advertisment> newAds = new();
 
+            // Iterate through scrapedAds to update LastActive and match URLs
             foreach (var scrapedAd in scrapedAds)
             {
-                if (queryedTitles.Contains(scrapedAd.Title))
+                if (queryedAdsByTitle.TryGetValue(scrapedAd.Title, out var queryedAd))
                 {
-                    var existingAd = queryedAds.First(ad => ad.Title == scrapedAd.Title);
+                    // Update LastActive
+                    queryedAd.LastActive = DateTime.UtcNow;
 
-                    if (existingAd.Url != scrapedAd.Url)
+                    // Update URL if it's different
+                    if (queryedAd.Url != scrapedAd.Url)
                     {
-                        existingAd.Url = scrapedAd.Url;
-                        updatedAds.Add(existingAd);
+                        queryedAd.Url = scrapedAd.Url;
+                        updatedAds.Add(queryedAd);
                     }
+
+                    // Remove the matched queryedAd
+                    queryedAdsByTitle.Remove(scrapedAd.Title);
                 }
                 else
                 {
-                    unmatchedAds.Add(scrapedAd);
+                    // Add unmatched scrapedAd to newAds
+                    newAds.Add(scrapedAd);
                 }
             }
 
+            // Deactivate unmatched queryedAds
+            foreach (var queryedAd in queryedAdsByTitle.Values)
+            {
+                queryedAd.CurrentlyActive = false;
+                updatedAds.Add(queryedAd);
+            }
+
+            // Update the modified queryedAds
             if (updatedAds.Count > 0)
             {
                 await _unitOfWork.Advertisement.UpdateRange(updatedAds);
             }
 
-            if (unmatchedAds.Count > 0)
+            // Add new unmatched scrapedAds to the database
+            if (newAds.Count > 0)
             {
-                await _unitOfWork.Advertisement.AddRange(unmatchedAds);
+                await _unitOfWork.Advertisement.AddRange(newAds);
             }
 
-            if (updatedAds.Count > 0 || unmatchedAds.Count > 0)
-            {
-                await _unitOfWork.Save();
-                Console.WriteLine($"Saved {updatedAds.Count + unmatchedAds.Count} ads to the database");
-            }
+            // Save changes
+            await _unitOfWork.Save();
+
+            Console.WriteLine($"Sync completed. Updated: {updatedAds.Count}, Added: {newAds.Count}");
 
         }
     }
