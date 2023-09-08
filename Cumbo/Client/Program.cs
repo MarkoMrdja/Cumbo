@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using Cumbo.Client;
+using Cumbo.Client.Services.AdvertisementService;
 using Cumbo.Client.Services.AuthService;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -28,6 +29,7 @@ builder.Services.AddMudServices(config =>
 builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAdvertisementService, AdvertisementService>();
 
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddAuthorizationCore();

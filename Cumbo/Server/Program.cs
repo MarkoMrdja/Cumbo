@@ -20,6 +20,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddCors(policy =>
+{
+    policy.AddPolicy("CorsPolicy", opt => opt
+    .AllowAnyOrigin()
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .WithExposedHeaders("X-Pagination"));
+});
 
 //builder.Services.AddEntityFrameworkNpgsql().AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection")));
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -89,6 +97,7 @@ else
 }
 
 app.UseHttpsRedirection();
+app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -105,6 +114,6 @@ app.MapFallbackToFile("index.html");
 app.UseHangfireDashboard();
 app.MapHangfireDashboard();
 
-RecurringJob.AddOrUpdate<IHangfireService>("adJob", x => x.SyncAds(), "0 */10 * ? * *");
+RecurringJob.AddOrUpdate<IHangfireService>("adJob", x => x.SyncAds(), "0 */2 * * *");
 
 app.Run();

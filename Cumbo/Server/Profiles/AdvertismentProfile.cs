@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Cumbo.Server.Models.KupujemProdajemAd;
+using Cumbo.Shared.DTOs.Advertisement;
 using Cumbo.Shared.Enums;
 
 namespace Cumbo.Server.Profiles;

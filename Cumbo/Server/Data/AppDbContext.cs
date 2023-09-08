@@ -1,5 +1,6 @@
 ﻿using Cumbo.Server.Models;
 using Cumbo.Server.Models.KupujemProdajemAd;
+using Cumbo.Shared.DTOs.Advertisement;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cumbo.Server.Data

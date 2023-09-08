@@ -1,0 +1,50 @@
+﻿@using Cumbo.Client.Services.AdvertisementService;
+@using Cumbo.Shared.DTOs.Advertisement;
+@using Cumbo.Shared.Entities;
+@using Cumbo.Shared.RequestFeatures;
+@inject NavigationManager NavigationManager
+@inject IAdvertisementService AdService
+
+
+@foreach(var advertisement in AdList)
+{
+    <div class="advertisement-container">
+        <div class="image-container">
+            <img src="@advertisement.Image" alt="Advertisement Image" style="height:100%; width:auto;" @onclick="() => RedirectToUrl(advertisement.Url)" />
+        </div>
+        <div class="ad-details">
+            <h3>@advertisement.Title</h3>
+            <p>Price: @advertisement.Price</p>
+            <p>Product Type: @advertisement.ProductType</p>
+            <p>Last Active: @advertisement.LastActive</p>
+        </div>
+    </div>
+}
+<Pagination MetaData="@MetaData" Spread="3" SelectedPage="SelectedPage"/>
+
+@code {
+    public List<Advertisment> AdList { get; set; } = new List<Advertisment>();
+    public MetaData MetaData { get; set; } = new MetaData();
+    private AdvertisementParameters _productParameters = new AdvertisementParameters();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await GetProducts();
+    }
+    private async Task SelectedPage(int page)
+    {
+        _productParameters.PageNumber = page;
+        await GetProducts();
+    }
+    private async Task GetProducts()
+    {
+        var pagingResponse = await AdService.GetAds(_productParameters);
+        AdList = pagingResponse.Items;
+        MetaData = pagingResponse.MetaData;
+    }
+
+    private void RedirectToUrl(string url)
+    {
+        NavigationManager.NavigateTo(url);
+    }
+}

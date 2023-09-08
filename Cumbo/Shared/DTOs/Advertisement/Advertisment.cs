@@ -1,6 +1,6 @@
 ﻿using Cumbo.Shared.Enums;
 
-namespace Cumbo.Server.Models.KupujemProdajemAd
+namespace Cumbo.Shared.DTOs.Advertisement
 {
     public class Advertisment
     {

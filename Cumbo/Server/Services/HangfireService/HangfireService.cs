@@ -2,6 +2,7 @@
 using Cumbo.Server.Models.KupujemProdajemAd;
 using Cumbo.Server.Repository;
 using Cumbo.Server.Services.ScrapeService;
+using Cumbo.Shared.DTOs.Advertisement;
 
 namespace Cumbo.Server.Services.HangfireService
 {
