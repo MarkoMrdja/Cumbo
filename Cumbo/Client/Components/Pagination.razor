@@ -1,16 +1,8 @@
 ﻿@using Cumbo.Client.Features;
 @using Cumbo.Shared.Entities;
 
-<nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center">
-        @foreach (var link in _links)
-        {
-            <li @onclick="() => OnSelectedPage(link)" style="cursor: pointer;" class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
-                <span class="page-link" href="#">@link.Text</span>
-            </li>
-        }
-    </ul>
-</nav>
+
+<MudPagination Color="Color.Primary" Count="MetaData.TotalPages" SelectedChanged="SelectPage" Size="Size.Large"/>
 
 @code {
     [Parameter]
@@ -26,6 +18,7 @@
     {
         CreatePaginationLinks();
     }
+
     private void CreatePaginationLinks()
     {
         _links = new List<PagingLink>();
@@ -45,5 +38,12 @@
             return;
         MetaData.CurrentPage = link.Page;
         await SelectedPage.InvokeAsync(link.Page);
+    }
+    private async Task SelectPage(int page)
+    {
+        PagingLink pagingLink = _links.FirstOrDefault(x => x.Page == page);
+
+        if (pagingLink is not null)
+            await OnSelectedPage(pagingLink);
     }
 }

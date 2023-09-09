@@ -20,7 +20,10 @@
         </div>
     </div>
 }
-<Pagination MetaData="@MetaData" Spread="3" SelectedPage="SelectedPage"/>
+<MudContainer Class="d-flex justify-center mb-8 mt-3">
+    <Pagination MetaData="@MetaData" Spread="MetaData.TotalPages" SelectedPage="SelectedPage"/>
+</MudContainer>
+
 
 @code {
     public List<Advertisment> AdList { get; set; } = new List<Advertisment>();
